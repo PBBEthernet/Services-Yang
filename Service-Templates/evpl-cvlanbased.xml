@@ -1,23 +1,32 @@
 <services xmlns="http://tail-f.com/ns/ncs">
-  <pbb-evpl xmlns="http://com/example/evp">
-    <name>EBD4050</name>
-    <connection-type>point-to-point</connection-type>
-    <bandwidth>100</bandwidth>
-    <uni-endpoints>
-      <device>elab9075.elab.tata</device>
-      <interface>GigabitEthernet0/0/0/19</interface>
-      <port-type>customer-vlan</port-type>
-      <cvlan>4050</cvlan>
-      <ingress-vlan>4050</ingress-vlan>
-      <mac-address>a000.8500.0001</mac-address>
-    </uni-endpoints>
-    <uni-endpoints>
-      <device>elab9085.elab.tata</device>
-      <interface>GigabitEthernet0/0/0/19</interface>
-      <port-type>customer-vlan</port-type>
-      <cvlan>4050</cvlan>
-      <ingress-vlan>4050</ingress-vlan>
-      <mac-address>a000.7500.0001</mac-address>
-    </uni-endpoints>
+  <pbb-evpl xmlns="http://com/example/evp" xmlns:y="http://tail-f.com/ns/rest"  xmlns:evpl="http://com/example/evp"  xmlns:ncs="http://tail-f.com/ns/ncs">
+      <name>EBD11111</name>
+      <connection-type>point-to-point</connection-type>
+      <uni-endpoints>
+          <device>elab9020</device>
+          <interface>GigabitEthernet0/3/0/18</interface>
+          <ingress-BW xmlns="http://com/example/evp">
+              <CIR>100</CIR>
+              <CBS>1000</CBS>
+          </ingress-BW>
+          <port-type>customer-vlan</port-type>
+          <cvlan>4010</cvlan>
+          <ingress-vlan>110</ingress-vlan>
+          <bvid>CBD1203</bvid>
+          <mac-address>c000.5000.0001</mac-address>
+      </uni-endpoints>
+      <uni-endpoints>
+        <device>elab9050</device>
+        <interface>GigabitEthernet0/3/0/5</interface>
+        <ingress-BW xmlns="http://com/example/evp">
+            <CIR>50</CIR>
+            <CBS>512</CBS>
+        </ingress-BW>
+        <port-type>customer-vlan</port-type>
+        <cvlan>4010</cvlan>
+        <ingress-vlan>120</ingress-vlan>
+        <bvid>CBD1203</bvid>
+        <mac-address>b000.2000.0001</mac-address>
+      </uni-endpoints>
   </pbb-evpl>
 </services>

@@ -78,9 +78,6 @@ private static Logger log = Logger.getLogger(evpRFS.class);
          String conn = ev.leaf(evpl._connection_type_).valueAsString();
          log.info("Service instance (" + serviceName + ") type: " + conn 
                                       + " isid: " + isid); 
-         
-         // Determine the bandwidth requirement
-         String bandwidth = ev.leaf(evpl._bandwidth_).valueAsString();
      
          // Determine the service description
          String serviceDescription = ev.leaf(evpl._description_).valueAsString();
@@ -88,7 +85,7 @@ private static Logger log = Logger.getLogger(evpRFS.class);
          ////
          // Apply the template for each configured endpoint
          ////
-         for (NavuContainer enp : ev.list(evpl._uni_endpoints_).elements()) {         
+         for (NavuContainer enp: ev.list(evpl._uni_endpoints_).elements()) {         
            try {
              log.info("Service Apply template for device:" + enp.leaf(evpl._device_).valueAsString());
              TemplateVariables vars = new TemplateVariables();
@@ -113,7 +110,8 @@ private static Logger log = Logger.getLogger(evpRFS.class);
 
              // Create the template variables
              vars.putQuoted("sDescribe", serviceDescription);
-             vars.putQuoted("BW", bandwidth);
+             vars.putQuoted("inCIR", enp.container(evpl._ingress_BW_).leaf(evpl._CIR_).valueAsString());
+             vars.putQuoted("inCBS", enp.container(evpl._ingress_BW_).leaf(evpl._CBS_).valueAsString());
              vars.putQuoted("OPER", operation);
              vars.putQuoted("OLAN", ovlan);
              vars.putQuoted("CONN", conn);

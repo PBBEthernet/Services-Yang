@@ -21,13 +21,19 @@ module evpl {
     "This submodule contains a collection of YANG definitions for
      defining the PBB EVPL or EVPLAN service(s)";
 
-  revision 2014-06-25 {
-    description
-    "Initial version";
+  revision 2016-11-14 {
+  	description
+    "Version 1.1, added configurable CBS, changed CIR/CBS to per endpoint";
   }
+
   revision 2016-07-20 {
   	description
     "Version 1.0, added default values to Bridge Domains, BVID ID";
+  }
+
+  revision 2014-06-25 {
+    description
+    "Initial version";
   }
 
   /////////////////////////////////////////////////////
@@ -65,11 +71,7 @@ module evpl {
         }
 		default "point-to-point";
       }
-      leaf bandwidth {
-        tailf:info "Bandwidth in mbps";
-        type uint32;
-        default "1";
-      }
+	
       /////////////////////////////////////////////////////
       // Endpoints 
       /////////////////////////////////////////////////////
@@ -92,7 +94,19 @@ module evpl {
            tailf:info "Service endpoint description";
            type string;
         }
-        leaf port-type {
+	   container ingress-BW {
+           leaf CIR {
+              tailf:info "Bandwidth in mbps";
+              type uint32;
+              default "1";
+           }
+           leaf CBS {
+              tailf:info "Burst in kbps";
+              type uint32;
+              default "256";
+           }
+        }
+	   leaf port-type {
             tailf:info "UNI port type";
             type enumeration {
                enum "port-based";
@@ -124,7 +138,7 @@ module evpl {
          }
          leaf bvid {
            type string;
-    	   default "CBD1203";
+     	    default "CBD1203";
          }
          leaf mac-address {
            tailf:info "UNI endpoint MAC address value";

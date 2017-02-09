@@ -11,9 +11,9 @@
                  <police-rate-unit>
                    <police>
                       <rate>
-                        <cir>{$BW}</cir>
+                        <cir>{$inCIR}</cir>
                         <cir-unit>mbps</cir-unit>
-                        <burst>100</burst>
+                        <burst>{$inCBS}</burst>
                         <burst-units>kbytes</burst-units>
                       </rate>
                   </police>
@@ -26,7 +26,7 @@
             <GigabitEthernet>
               <id>{substring-after($INTF, 'GigabitEthernet')}.{$VLAN}</id>
               <mode>l2transport</mode>
-              <description>Tailf-POC {$NAME}</description>
+              <description>{$sDescribe}-{$NAME}</description>
               <encapsulation when="{starts-with($PTYPE,'customer-vlan')}">
                 <dot1q>
                   <vlan-id>{$CVLAN}</vlan-id>
@@ -103,7 +103,7 @@
             <Bundle-Ether>
               <id>{substring-after($INTF, 'Bundle-Ether')}.{$VLAN}</id>
               <mode>l2transport</mode>
-              <description>Tailf-POC {$NAME}</description>
+              <description>{$sDescribe}-{$NAME}</description>
               <encapsulation when="{starts-with($PTYPE,'customer-vlan')}">
                 <dot1q>
                   <vlan-id>{$CVLAN}</vlan-id>
