@@ -1,0 +1,194 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+  <device>
+    <name>{$DEVICE}</name>
+      <config>
+         <policy-map xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <name>{$NAME}_policy_map_DCIWAN</name>
+           <class>
+             <class-default>
+               <map>class-default</map>
+                 <police-rate-unit>
+                   <police>
+                      <rate>
+                        <cir>{$BW}</cir>
+                        <cir-unit>mbps</cir-unit>
+                        <burst>100</burst>
+                        <burst-units>kbytes</burst-units>
+                      </rate>
+                  </police>
+                 </police-rate-unit>
+             </class-default>
+           </class>
+         </policy-map>
+         <interface xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge">
+          <GigabitEthernet-subinterface when="{starts-with($INTF,'GigabitEthernet')}">
+            <GigabitEthernet>
+              <id>{substring-after($INTF, 'GigabitEthernet')}.{$VLAN}</id>
+              <mode>l2transport</mode>
+              <description>Tailf-POC {$NAME}</description>
+              <encapsulation when="{starts-with($PTYPE,'customer-vlan')}">
+                <dot1q>
+                  <vlan-id>{$CVLAN}</vlan-id>
+                </dot1q>
+              </encapsulation>
+              <encapsulation when="{starts-with($PTYPE,'service-vlan')}">
+                <dot1ad>
+                  <vlan-id>{$SVLAN}</vlan-id>
+                </dot1ad>
+              </encapsulation>
+              <encapsulation when="{starts-with($PTYPE,'port-based')}">
+               <default/>
+              </encapsulation>             
+              <service-policy>
+                <input>
+                  <name>{$NAME}_policy_map_DCIWAN</name>
+                </input>
+              </service-policy>
+              <rewrite when="{starts-with($PTYPE,'port-based')}">
+                <ingress>
+                  <tag when="{starts-with($OPER, 'none')}">
+                    <push/>
+                    <dot1ad>100</dot1ad>
+                    <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'translate')}">
+                    <translate>1-to-1</translate>
+                    <dot1ad>{$OLAN}</dot1ad>
+                    <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'rewrite')}">
+                   <push/>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>               
+                </ingress>
+              </rewrite>
+              <rewrite when="{starts-with($PTYPE,'customer-vlan')}">
+                <ingress>
+                  <tag when="{starts-with($OPER, 'none')}">
+                    <push/>
+                    <dot1ad>100</dot1ad>
+                    <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'translate')}">
+                   <translate>1-to-1</translate>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'rewrite')}">
+                   <push/>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>                                 
+                </ingress>
+              </rewrite>
+              <rewrite when="{starts-with($PTYPE,'service-vlan')}">
+                <ingress>
+                  <tag when="{starts-with($OPER, 'translate')}">
+                   <translate>1-to-1</translate>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'rewrite')}">
+                   <push/>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>
+                </ingress>
+              </rewrite>
+            </GigabitEthernet>
+          </GigabitEthernet-subinterface>
+          <Bundle-Ether-subinterface when="{starts-with($INTF,'Bundle-Ether')}">
+            <Bundle-Ether>
+              <id>{substring-after($INTF, 'Bundle-Ether')}.{$VLAN}</id>
+              <mode>l2transport</mode>
+              <description>Tailf-POC {$NAME}</description>
+              <encapsulation when="{starts-with($PTYPE,'customer-vlan')}">
+                <dot1q>
+                  <vlan-id>{$CVLAN}</vlan-id>
+                </dot1q>
+              </encapsulation>
+              <encapsulation when="{starts-with($PTYPE,'service-vlan')}">
+                <dot1ad>
+                  <vlan-id>{$SVLAN}</vlan-id>
+                </dot1ad>
+              </encapsulation>
+              <encapsulation when="{starts-with($PTYPE,'port-based')}">
+               <default/>
+              </encapsulation>             
+              <service-policy>
+                <input>
+                  <name>{$NAME}_policy_map_DCIWAN</name>
+                </input>
+              </service-policy>
+              <rewrite when="{starts-with($PTYPE,'port-based')}">
+                <ingress>
+                  <tag when="{starts-with($OPER, 'none')}">
+                    <push/>
+                    <dot1ad>100</dot1ad>
+                    <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'translate')}">
+                    <translate>1-to-1</translate>
+                    <dot1ad>{$OLAN}</dot1ad>
+                    <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'rewrite')}">
+                   <push/>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>                               
+                </ingress>
+              </rewrite>
+              <rewrite when="{starts-with($PTYPE,'customer-vlan')}">
+                <ingress>
+                  <tag when="{starts-with($OPER, 'none')}">
+                    <push/>
+                    <dot1ad>100</dot1ad>
+                    <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'translate')}">
+                   <translate>1-to-1</translate>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>
+                  <tag when="{starts-with($OPER, 'rewrite')}">
+                   <push/>
+                   <dot1ad>{$OLAN}</dot1ad>
+                   <mode>symmetric</mode>
+                  </tag>
+                </ingress>
+              </rewrite>
+            </Bundle-Ether>
+          </Bundle-Ether-subinterface>
+        </interface>
+        <l2vpn xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge">
+          <bridge>
+            <group>
+              <group-name>{$EBG}</group-name>
+              <bridge-domain>
+                <bridge-domain-name>{$NAME}</bridge-domain-name>
+                <interface>
+                  <name>{$INTF}.{$VLAN}</name>
+                </interface>
+                <mac when="{starts-with($CONN, 'point-to-point')}">
+                  <learning>
+                     <disable/>
+                  </learning>
+                </mac>
+                <pbb>
+                  <edge>
+                    <i-sid>{$ISID}</i-sid>
+                    <core-bridge>{$CBB}</core-bridge>
+                    <unknown-unicast-bmac>{$MAC}</unknown-unicast-bmac>
+                  </edge>
+                </pbb>
+              </bridge-domain>
+            </group>
+          </bridge>
+        </l2vpn>
+      </config>
+  </device>
+  </devices>
+</config-template>

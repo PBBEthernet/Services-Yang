@@ -1,0 +1,154 @@
+module evpl {
+  namespace "http://com/example/evp";
+  prefix evpl;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-common {
+    prefix tailf;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+  import tailf-ned-cisco-ios-xr {
+    prefix cisco-ios-xr;
+  }
+  
+  organization "Tata Communications";
+
+  description
+    "This submodule contains a collection of YANG definitions for
+     defining the PBB EVPL or EVPLAN service(s)";
+
+  revision 2014-06-25 {
+    description
+    "Initial version";
+  }
+  revision 2016-07-20 {
+  	description
+    "Version 1.0, added default values to Bridge Domains, BVID ID";
+  }
+
+  /////////////////////////////////////////////////////
+  // EVPL or EVPLAN Service Model
+  /////////////////////////////////////////////////////
+
+  augment /ncs:services {
+    list pbb-evpl {
+      tailf:info "EVPL or EVPLAN service";
+      key "name";
+      leaf name {
+        tailf:info "EVPL or EVPLAN service instance name EBD + isid";
+        type string {
+             pattern "EBD[0-9][0-9]+";
+        }
+      }
+
+      uses ncs:service-data;
+      ncs:servicepoint evpl-epl-service;
+      
+      leaf description {
+        tailf:info "Service instance description";
+        type string;
+        default "DCI Service Orchestration POC";
+      }
+      leaf bridge-group {
+        type string;
+        default "DCI-Bridges";
+      }
+      leaf connection-type {
+        tailf:info "Connection type port based or vlan based";
+        type enumeration {
+          enum "point-to-point";
+          enum "multipoint";
+        }
+		default "point-to-point";
+      }
+      leaf bandwidth {
+        tailf:info "Bandwidth in mbps";
+        type uint32;
+        default "1";
+      }
+      /////////////////////////////////////////////////////
+      // Endpoints 
+      /////////////////////////////////////////////////////
+
+      list uni-endpoints {
+        key "device";
+        tailf:info "EVPL or EVPLAN connection endpoints";
+        leaf device {
+          tailf:info "Device";
+          type leafref {
+             path "/ncs:devices/ncs:device/ncs:name";
+          }
+        }
+        leaf interface {
+          tailf:info "UNI endpoint network interface";
+          type string;
+          mandatory true;
+        }
+        leaf description {
+           tailf:info "Service endpoint description";
+           type string;
+        }
+        leaf port-type {
+            tailf:info "UNI port type";
+            type enumeration {
+               enum "port-based";
+               enum "customer-vlan";
+               enum "service-vlan";
+            }
+            mandatory true;
+        }
+        leaf cvlan {
+           tailf:info "Customer vlan";
+           type uint16;
+          // must "(../port-type = 'customer-vlan')" {
+          //    error-message "vlan parameter is not valid for port-based vlans";
+          //    tailf:dependency "../port-type";
+          // }
+         }
+         leaf svlan {
+           tailf:info "Service vlan";
+           type uint16;
+         //  must "(../port-type = 'service-vlan')" {
+         //     error-message "vlan parameter is not valid for port-based vlans";
+         //     tailf:dependency "../port-type";
+         //  }
+         }
+         leaf ingress-vlan {
+           tailf:info "Ingress VLAN type";
+           type uint16;
+           mandatory true;
+         }
+         leaf bvid {
+           type string;
+    	   default "CBD1203";
+         }
+         leaf mac-address {
+           tailf:info "UNI endpoint MAC address value";
+           type string {
+             pattern "[0-9a-fA-F]+\.[0-9a-fA-F]+\.[0-9a-fA-F]+";
+           }
+           mandatory true;
+         }
+         leaf operation {
+            type enumeration {
+               enum "none";
+               enum "translate";
+               enum "rewrite";
+            }
+            default "none";
+         }
+         leaf operation-vlan {
+           type union {
+              type uint16;
+           }
+           default "0";
+         }
+       } //uni-endpoints
+    }  //pbb-evpl
+  } //augment
+}
+
