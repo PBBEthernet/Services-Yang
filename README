@@ -1,0 +1,6 @@
+# Services-Yang
+The yang service model is for EVPL/LAN services accross PBB Ehterent Network. 
+
+The RFS java file is needed to map the service yang model to the configuration template that drives the network node configuration.
+
+The xml template file is to execute the step by step CLI configuration of each network element. 
